@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Overview</h1>
+<div class="grid">
+  {% for key, value in counts.items() %}
+  <div class="stat"><b>{{ value }}</b><span>{{ key }}</span></div>
+  {% endfor %}
+</div>
+<div class="card" style="margin-top:18px;">
+  <h2>Quick actions</h2>
+  <p>
+    <a class="btn" href="/admin/questions/new">Add question</a>
+    <a class="btn" href="/admin/content">Manage content</a>
+    <a class="btn" href="/admin/tests">Create mock test</a>
+  </p>
+</div>
+{% endblock %}

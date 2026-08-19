@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Content</h1>
+<div class="row">
+  <div class="card">
+    <h2>Add subject</h2>
+    <form method="post" action="/admin/content/subjects">
+      <label for="s_name">Name</label><input id="s_name" name="name" required>
+      <label for="s_slug">Slug</label><input id="s_slug" name="slug" required pattern="[a-z0-9-]+">
+      <label for="s_color">Colour</label><input id="s_color" name="color" type="color" value="#3F51B5">
+      <p><button type="submit">Create subject</button></p>
+    </form>
+  </div>
+  <div class="card">
+    <h2>Add chapter</h2>
+    <form method="post" action="/admin/content/chapters">
+      <label for="c_subject">Subject</label>
+      <select id="c_subject" name="subject_id" required>
+        {% for subject in subjects %}<option value="{{ subject.id }}">{{ subject.name }}</option>{% endfor %}
+      </select>
+      <label for="c_name">Name</label><input id="c_name" name="name" required>
+      <label for="c_slug">Slug</label><input id="c_slug" name="slug" required pattern="[a-z0-9-]+">
+      <p><button type="submit">Create chapter</button></p>
+    </form>
+  </div>
+</div>
+<div class="row">
+  <div class="card">
+    <h2>Add topic</h2>
+    <form method="post" action="/admin/content/topics">
+      <label for="t_chapter">Chapter</label>
+      <select id="t_chapter" name="chapter_id" required>
+        {% for chapter in chapters %}<option value="{{ chapter.id }}">{{ chapter.subject.name }} — {{ chapter.name }}</option>{% endfor %}
+      </select>
+      <label for="t_name">Name</label><input id="t_name" name="name" required>
+      <label for="t_slug">Slug</label><input id="t_slug" name="slug" required pattern="[a-z0-9-]+">
+      <p><button type="submit">Create topic</button></p>
+    </form>
+  </div>
+  <div class="card">
+    <h2>Add learning material</h2>
+    <form method="post" action="/admin/content/concepts">
+      <label for="k_chapter">Chapter</label>
+      <select id="k_chapter" name="chapter_id" required>
+        {% for chapter in chapters %}<option value="{{ chapter.id }}">{{ chapter.subject.name }} — {{ chapter.name }}</option>{% endfor %}
+      </select>
+      <label for="k_kind">Kind</label>
+      <select id="k_kind" name="kind">
+        <option value="concept">concept</option>
+        <option value="formula">formula</option>
+        <option value="example">example</option>
+        <option value="point">revision point</option>
+      </select>
+      <label for="k_title">Title</label><input id="k_title" name="title" required>
+      <label for="k_body">Body</label><textarea id="k_body" name="body" rows="3"></textarea>
+      <p><button type="submit">Create material</button></p>
+    </form>
+  </div>
+</div>
+<div class="card">
+  <h2>Chapters</h2>
+  <table>
+    <thead><tr><th>#</th><th>Subject</th><th>Chapter</th><th>Topics</th><th>Material</th></tr></thead>
+    <tbody>
+      {% for chapter in chapters %}
+      <tr>
+        <td>{{ chapter.id }}</td>
+        <td>{{ chapter.subject.name }}</td>
+        <td>{{ chapter.name }}</td>
+        <td>{{ chapter.topics | length }}</td>
+        <td>{{ concept_counts.get(chapter.id, 0) }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

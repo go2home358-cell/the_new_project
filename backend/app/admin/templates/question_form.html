@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>{{ 'Edit' if question else 'Add' }} question</h1>
+<div class="card">
+  {% if error %}<div class="error">{{ error }}</div>{% endif %}
+  <form method="post" action="/admin/questions/save" enctype="multipart/form-data">
+    {% if question %}<input type="hidden" name="question_id" value="{{ question.id }}">{% endif %}
+    <div class="row">
+      <div>
+        <label for="subject_id">Subject</label>
+        <select id="subject_id" name="subject_id" required>
+          {% for subject in subjects %}
+          <option value="{{ subject.id }}" {% if question and question.subject_id == subject.id %}selected{% endif %}>{{ subject.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div>
+        <label for="chapter_id">Chapter</label>
+        <select id="chapter_id" name="chapter_id" required>
+          {% for chapter in chapters %}
+          <option value="{{ chapter.id }}" data-subject="{{ chapter.subject_id }}" {% if question and question.chapter_id == chapter.id %}selected{% endif %}>{{ chapter.subject.name }} — {{ chapter.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+    <div class="row">
+      <div>
+        <label for="topic_id">Topic (optional)</label>
+        <select id="topic_id" name="topic_id">
+          <option value="">—</option>
+          {% for topic in topics %}
+          <option value="{{ topic.id }}" {% if question and question.topic_id == topic.id %}selected{% endif %}>{{ topic.chapter.name }} — {{ topic.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div>
+        <label for="difficulty">Difficulty</label>
+        <select id="difficulty" name="difficulty">
+          {% for level in ['easy', 'medium', 'hard'] %}
+          <option value="{{ level }}" {% if question and question.difficulty == level %}selected{% endif %}>{{ level }}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+    <label for="text">Question</label>
+    <textarea id="text" name="text" rows="3" required>{{ question.text if question else '' }}</textarea>
+    {% set labels = {'A': 'option_a', 'B': 'option_b', 'C': 'option_c', 'D': 'option_d'} %}
+    {% for label, field in labels.items() %}
+    <label for="{{ field }}">Option {{ label }}</label>
+    <input id="{{ field }}" name="{{ field }}" required
+      value="{% if question %}{% for option in question.options %}{% if option.label == label %}{{ option.text }}{% endif %}{% endfor %}{% endif %}">
+    {% endfor %}
+    <label for="correct">Correct option</label>
+    <select id="correct" name="correct" required>
+      {% for label in ['A', 'B', 'C', 'D'] %}
+      <option value="{{ label }}" {% if question and question.correct_option and question.correct_option.label == label %}selected{% endif %}>{{ label }}</option>
+      {% endfor %}
+    </select>
+    <label for="explanation">Explanation</label>
+    <textarea id="explanation" name="explanation" rows="3">{{ question.explanation if question else '' }}</textarea>
+    <div class="row">
+      <div>
+        <label for="source">Source / exam</label>
+        <input id="source" name="source" value="{{ question.source if question else '' }}">
+      </div>
+      <div>
+        <label for="year">Year</label>
+        <input id="year" name="year" type="number" value="{{ question.year if question and question.year else '' }}">
+      </div>
+    </div>
+    <label for="image">Diagram image (optional)</label>
+    <input id="image" name="image" type="file" accept="image/png,image/jpeg,image/webp">
+    <p><button type="submit">Save question</button> <a class="btn" href="/admin/questions" style="background:#e5e7eb;color:#1c1e26">Cancel</a></p>
+  </form>
+</div>
+{% endblock %}

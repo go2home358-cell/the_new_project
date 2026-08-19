@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Tests</h1>
+<div class="card">
+  <h2>Create test</h2>
+  <form method="post" action="/admin/tests">
+    <div class="row">
+      <div><label for="title">Title</label><input id="title" name="title" required></div>
+      <div>
+        <label for="kind">Kind</label>
+        <select id="kind" name="kind">
+          <option value="mock">mock</option>
+          <option value="chapter">chapter</option>
+          <option value="daily">daily</option>
+        </select>
+      </div>
+    </div>
+    <div class="row">
+      <div>
+        <label for="subject_id">Subject (optional)</label>
+        <select id="subject_id" name="subject_id">
+          <option value="">All subjects</option>
+          {% for subject in subjects %}<option value="{{ subject.id }}">{{ subject.name }}</option>{% endfor %}
+        </select>
+      </div>
+      <div><label for="duration_minutes">Duration (minutes)</label><input id="duration_minutes" name="duration_minutes" type="number" value="15" min="1"></div>
+    </div>
+    <label for="total_questions">Questions</label>
+    <input id="total_questions" name="total_questions" type="number" value="10" min="1" max="200">
+    <p><button type="submit">Create test</button></p>
+  </form>
+</div>
+<div class="card">
+  <table>
+    <thead><tr><th>#</th><th>Title</th><th>Kind</th><th>Questions</th><th>Duration</th></tr></thead>
+    <tbody>
+      {% for test in tests %}
+      <tr>
+        <td>{{ test.id }}</td>
+        <td>{{ test.title }}</td>
+        <td>{{ test.kind }}</td>
+        <td>{{ test.total_questions }}</td>
+        <td>{{ (test.duration_seconds / 60) | round(0, 'floor') | int }} min</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
