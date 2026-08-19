@@ -1,0 +1,10 @@
+line-length = 120
+target-version = "py310"
+
+[lint]
+select = ["E", "F", "I", "B", "UP"]
+ignore = ["B008"]  # FastAPI uses Depends(...) in defaults
+
+[lint.per-file-ignores]
+"tests/*" = ["B011"]
+"app/db/seed_data/*" = ["E501"]  # study material prose is not wrapped

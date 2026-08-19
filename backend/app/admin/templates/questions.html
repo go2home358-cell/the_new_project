@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Questions</h1>
+<div class="card">
+  <form method="get" action="/admin/questions" style="display:flex;gap:12px;align-items:end;">
+    <div style="flex:1">
+      <label for="subject_id">Filter by subject</label>
+      <select id="subject_id" name="subject_id">
+        <option value="">All subjects</option>
+        {% for subject in subjects %}
+        <option value="{{ subject.id }}" {% if selected_subject == subject.id %}selected{% endif %}>{{ subject.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <button type="submit">Apply</button>
+    <a class="btn" href="/admin/questions/new">Add question</a>
+  </form>
+</div>
+<div class="card">
+  <table>
+    <thead>
+      <tr><th>#</th><th>Question</th><th>Difficulty</th><th>Correct</th><th>Attempts</th><th>Accuracy</th><th></th></tr>
+    </thead>
+    <tbody>
+      {% for question in questions %}
+      {% set stat = stats.get(question.id, (0, 0)) %}
+      <tr>
+        <td>{{ question.id }}</td>
+        <td>{{ question.text[:110] }}</td>
+        <td>{{ question.difficulty }}</td>
+        <td>{{ question.correct_option.label if question.correct_option else '—' }}</td>
+        <td>{{ stat[0] }}</td>
+        <td>{{ (stat[1] / stat[0] * 100) | round(1) if stat[0] else 0 }}%</td>
+        <td style="white-space:nowrap">
+          <a class="btn" href="/admin/questions/{{ question.id }}/edit">Edit</a>
+          <form method="post" action="/admin/questions/{{ question.id }}/delete" style="display:inline">
+            <button class="danger" type="submit" onclick="return confirm('Delete question {{ question.id }}?')">Delete</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

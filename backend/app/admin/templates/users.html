@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Users</h1>
+<div class="card">
+  <table>
+    <thead><tr><th>#</th><th>Name</th><th>Email</th><th>Role</th><th>XP</th><th>Level</th><th>Streak</th><th>Joined</th></tr></thead>
+    <tbody>
+      {% for user in users %}
+      <tr>
+        <td>{{ user.id }}</td>
+        <td>{{ user.name }}</td>
+        <td>{{ user.email }}</td>
+        <td>{{ user.role }}</td>
+        <td>{{ user.xp }}</td>
+        <td>{{ user.level }}</td>
+        <td>{{ user.streak_count }}</td>
+        <td>{{ user.created_at.strftime('%Y-%m-%d') }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
